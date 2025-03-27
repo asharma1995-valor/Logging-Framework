@@ -1,0 +1,62 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  json:
+    format: >
+      {
+        "timestamp": "%(asctime)s",
+        "type": "%(levelname)s",
+        "msg body": {
+          "id": "%(id)s",
+          "content": "%(message)s"
+        },
+        "module": "%(module)s",
+        "function": "%(funcName)s",
+        "line": "%(lineno)d",
+        "thread": "%(threadName)s",
+        "process": "%(process)d",
+        "execution_time": "%(execution_time)s",
+        "user_id": "%(user_id)s",
+        "correlation_id": "%(correlation_id)s"
+      }
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: WARNING
+    formatter: json
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: ERROR
+    formatter: json
+    filename: logs/app_prod.log
+    when: midnight
+    backupCount: 14
+    encoding: utf8
+    delay: true  # Prevents unnecessary file creation
+    utc: true     # Uses UTC timestamps for consistency
+
+  cloudwatch:
+    class: watchtower.CloudWatchLogHandler
+    level: INFO
+    formatter: json
+    log_group: "my-prod-log-group"
+    stream_name: "my-prod-log-stream"
+    region_name: "us-east-1"
+    log_group_retention_days: 14  
+    create_log_group: True        
+    use_queues: True  # Enables async logging for performance
+
+loggers:
+  app:
+    level: INFO
+    handlers: [console, file, cloudwatch]
+    propagate: no
+
+  aws:
+    level: INFO
+    handlers: [cloudwatch]
+    propagate: no

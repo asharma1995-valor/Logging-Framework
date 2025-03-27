@@ -1,0 +1,37 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  json:
+    format: >
+      {"timestamp": "%(asctime)s", "type": "%(levelname)s", 
+      "msg body": {"id": "%(id)s", "content": "%(message)s"},
+      "module": "%(module)s", "function": "%(funcName)s", 
+      "line": "%(lineno)d", "thread": "%(threadName)s", 
+      "process": "%(process)d", "execution_time": "%(execution_time)s"}
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: json
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/local_app.log
+    when: midnight
+    backupCount: 7
+    encoding: utf8
+
+loggers:
+  app:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: no
+
+root:
+  level: INFO
+  handlers: [console, file]
