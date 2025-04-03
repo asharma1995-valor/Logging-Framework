@@ -1,6 +1,8 @@
 version: 1
 disable_existing_loggers: False
 
+enable_file_logging: True  # If True → logs to both file & console, if False → only console
+
 formatters:
   json:
     format: >
@@ -29,9 +31,10 @@ handlers:
 loggers:
   app:
     level: DEBUG
-    handlers: [console, file]
+    handlers: [console]  # Default is only console
     propagate: no
 
 root:
   level: INFO
-  handlers: [console, file]
+  handlers: [console]  # Default is only console
+  propagate: no

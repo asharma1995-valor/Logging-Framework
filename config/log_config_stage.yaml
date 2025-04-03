@@ -36,8 +36,8 @@ handlers:
     when: midnight
     backupCount: 10
     encoding: utf8
-    delay: true  # Prevents unnecessary file creation
-    utc: true     # Uses UTC timestamps for consistency
+    delay: true  
+    utc: true    
 
   cloudwatch:
     class: watchtower.CloudWatchLogHandler
@@ -48,7 +48,7 @@ handlers:
     region_name: "us-east-1"
     log_group_retention_days: 14  
     create_log_group: True        
-    use_queues: True  # Enables async logging for performance
+    use_queues: True  
 
 loggers:
   app:
